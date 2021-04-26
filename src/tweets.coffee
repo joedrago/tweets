@@ -22,6 +22,7 @@ main = (argv) ->
   configFilename = argv[0]
   screenName = argv[1]
   outputFilename = argv[2]
+  mediaOnly = (argv.length > 3)
 
   config = JSON.parse(fs.readFileSync(configFilename, "utf8"))
   if not config.consumer_key? or not config.consumer_secret? or not config.access_token_key? or not config.access_token_secret?
@@ -52,12 +53,22 @@ main = (argv) ->
         continue
       if tweet.in_reply_to_user_id?
         continue
-      tweetLink = "https://twitter.com/#{screenName}/status/#{tweet.id_str}"
+      if mediaOnly
+        if tweet.entities? and tweet.entities.media? and (tweet.entities.media.length > 0) and tweet.entities.media[0].media_url?
+          media = tweet.entities.media[0]
+          if media.media_url.match(/video_thumb/)
+            tweetLink = media.expanded_url
+          else
+            tweetLink = media.media_url
+        else
+          continue
+      else
+        tweetLink = "https://twitter.com/#{screenName}/status/#{tweet.id_str}"
       tweetLinks.push tweetLink
 
     console.log "Got #{tweets.length} tweets..."
 
-    fs.writeFileSync("debug_#{oldestID}.json", JSON.stringify(tweets, null, 2))
+    # fs.writeFileSync("debug_#{oldestID}.json", JSON.stringify(tweets, null, 2))
 
     lastTweet = tweets[tweets.length - 1]
     oldestID = lastTweet.id

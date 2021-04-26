@@ -27,7 +27,7 @@
   };
 
   main = async function(argv) {
-    var config, configFilename, i, lastTweet, len, oldestID, outputFilename, screenName, tweet, tweetLink, tweetLinks, tweets, twitterClient;
+    var config, configFilename, i, lastTweet, len, media, mediaOnly, oldestID, outputFilename, screenName, tweet, tweetLink, tweetLinks, tweets, twitterClient;
     if (argv.length < 3) {
       console.log("tweets [config file] [screen name] [output file]");
       return;
@@ -35,6 +35,7 @@
     configFilename = argv[0];
     screenName = argv[1];
     outputFilename = argv[2];
+    mediaOnly = argv.length > 3;
     config = JSON.parse(fs.readFileSync(configFilename, "utf8"));
     if ((config.consumer_key == null) || (config.consumer_secret == null) || (config.access_token_key == null) || (config.access_token_secret == null)) {
       console.log("Config requires: consumer_key, consumer_secret, access_token_key, access_token_secret");
@@ -66,11 +67,24 @@
         if (tweet.in_reply_to_user_id != null) {
           continue;
         }
-        tweetLink = `https://twitter.com/${screenName}/status/${tweet.id_str}`;
+        if (mediaOnly) {
+          if ((tweet.entities != null) && (tweet.entities.media != null) && (tweet.entities.media.length > 0) && (tweet.entities.media[0].media_url != null)) {
+            media = tweet.entities.media[0];
+            if (media.media_url.match(/video_thumb/)) {
+              tweetLink = media.expanded_url;
+            } else {
+              tweetLink = media.media_url;
+            }
+          } else {
+            continue;
+          }
+        } else {
+          tweetLink = `https://twitter.com/${screenName}/status/${tweet.id_str}`;
+        }
         tweetLinks.push(tweetLink);
       }
       console.log(`Got ${tweets.length} tweets...`);
-      fs.writeFileSync(`debug_${oldestID}.json`, JSON.stringify(tweets, null, 2));
+      // fs.writeFileSync("debug_#{oldestID}.json", JSON.stringify(tweets, null, 2))
       lastTweet = tweets[tweets.length - 1];
       oldestID = lastTweet.id;
     }
