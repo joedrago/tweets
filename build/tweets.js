@@ -70,10 +70,10 @@
         if (mediaOnly) {
           if ((tweet.entities != null) && (tweet.entities.media != null) && (tweet.entities.media.length > 0) && (tweet.entities.media[0].media_url != null)) {
             media = tweet.entities.media[0];
-            if (media.media_url.match(/video_thumb/)) {
+            if (media.media_url_https.match(/video_thumb/)) {
               tweetLink = media.expanded_url;
             } else {
-              tweetLink = media.media_url;
+              tweetLink = media.media_url_https;
             }
           } else {
             continue;

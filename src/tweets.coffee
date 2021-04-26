@@ -56,10 +56,10 @@ main = (argv) ->
       if mediaOnly
         if tweet.entities? and tweet.entities.media? and (tweet.entities.media.length > 0) and tweet.entities.media[0].media_url?
           media = tweet.entities.media[0]
-          if media.media_url.match(/video_thumb/)
+          if media.media_url_https.match(/video_thumb/)
             tweetLink = media.expanded_url
           else
-            tweetLink = media.media_url
+            tweetLink = media.media_url_https
         else
           continue
       else
