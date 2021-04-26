@@ -52,8 +52,9 @@
       if (tweets.length === 0) {
         break;
       }
-      console.log(`First ID: ${tweets[0].id}`);
-      console.log(`Last  ID: ${tweets[tweets.length - 1].id}`);
+      if ((tweets.length === 1) && tweets[0].id === oldestID) {
+        break;
+      }
       for (i = 0, len = tweets.length; i < len; i++) {
         tweet = tweets[i];
         if (tweet.id === oldestID) {

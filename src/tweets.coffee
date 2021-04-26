@@ -42,8 +42,8 @@ main = (argv) ->
     if tweets.length == 0
       break
 
-    console.log "First ID: #{tweets[0].id}"
-    console.log "Last  ID: #{tweets[tweets.length - 1].id}"
+    if (tweets.length == 1) and tweets[0].id == oldestID
+      break
 
     for tweet in tweets
       if tweet.id == oldestID
