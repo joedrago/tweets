@@ -1,0 +1,21 @@
+{
+  "name": "tweets",
+  "version": "0.0.1",
+  "description": "Tweets Collector",
+  "bin": {
+    "heart": "./bin/tweets"
+  },
+  "scripts": {
+    "build": "cake build",
+    "watch": "cake watch"
+  },
+  "author": "Joe Drago",
+  "devDependencies": {
+    "coffeescript": "^2.5.1",
+    "node-watch": "^0.6.4",
+    "util": "^0.12.3"
+  },
+  "dependencies": {
+    "twitter": "^1.7.1"
+  }
+}
